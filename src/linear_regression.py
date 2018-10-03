@@ -25,6 +25,9 @@ class LinearRegression:
         self.std = X.std(axis=0)
         return (X - self.mean) / self.std
 
+    def _intercept(self, X):
+        return np.c_[np.ones(X.shape[0]), X]
+
     def _descale_beta(self, b):
         """Denormalize weights"""
         b = b.copy()

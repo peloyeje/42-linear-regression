@@ -7,3 +7,4 @@ y = data[:, 1]
 
 lr = LinearRegression()
 lr.fit(X, y)
+print(lr.predict(X))
