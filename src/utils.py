@@ -16,10 +16,7 @@ def read_csv(path, sep=',', header=True, **kwargs):
 
     Returns
     -------
-    A dict or a list of rows depending on header
-
-    Examples
-    --------
+    A list of columns (tuples or list depending on header)
 
     """
 
@@ -31,12 +28,13 @@ def read_csv(path, sep=',', header=True, **kwargs):
         lines = csv.reader(f, delimiter=sep, **kwargs)
 
         if header:
+            # Pop the first line of the file
             columns = next(lines)
 
         # Transpose rows into columns
-        df = list(map(list, zip(*lines)))
+        df = zip(*lines)
 
         if header:
             return list(zip(columns, df))
         else:
-            return df
+            return list(df)
