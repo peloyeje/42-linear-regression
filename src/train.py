@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib inline
+#%matplotlib inline
 
 class LinearRegression(object):
     def __init__(self, learning_rate, iterations):
-        data = np.genfromtxt('../data/data.csv', delimiter=',', skip_header=1)
+        data = np.genfromtxt('./data/data.csv', delimiter=',', skip_header=1)
         self.price = data[:, 1]
 
         self.kms = data[:, 0]
@@ -32,7 +32,7 @@ class LinearRegression(object):
         theta1 = theta1 - theta1_grad * self.learning_rate
         return theta0, theta1
 
-    def train(self):
+    def train(self, verbose=True):
         all_theta0 = np.empty((0,1))
         all_theta1 = np.empty((0,1))
         for i in range(self.iterations):
@@ -40,15 +40,16 @@ class LinearRegression(object):
             all_theta0 = np.append(all_theta0, np.array([[self.theta0]]), axis = 0)
             all_theta1 = np.append(all_theta1, np.array([[self.theta1]]), axis = 0)
 
-        all_theta0 = all_theta0 - (self.mean_kms/self.std_kms)
-        all_theta1 = all_theta1/self.std_kms
+        self.all_theta0 = all_theta0 - (self.mean_kms/self.std_kms)
+        self.all_theta1 = all_theta1/self.std_kms
 
-        np.savetxt('../output/thetas.txt', [all_theta0[-1], all_theta1[-1]], delimiter=',')
-
-        return all_theta0, all_theta1
+        if verbose == True:
+            np.savetxt('./output/thetas.txt', [self.all_theta0[-1], self.all_theta1[-1]], delimiter=',')
+            print("The thetas have been uploaded into ../output/thetas.txt")
 
     def plot_loss(self):
-        all_theta0, all_theta1 = self.train()
-        predictions = all_theta0 + all_theta1 * self.kms
+        self.train(verbose=False)
+        predictions = self.all_theta0 + self.all_theta1 * self.kms
         loss = np.average(np.square(predictions - self.price), axis=1)
         plt.plot(loss)
+        plt.show()
