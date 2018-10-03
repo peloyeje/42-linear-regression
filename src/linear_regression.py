@@ -80,7 +80,7 @@ class LinearRegression:
             )
 
             # Store history
-            self.history[i, :] = (i, *beta, loss)
+            self.history[i, :] = (i, *self._descale_beta(self.beta), loss)
 
             if np.sum(np.abs(beta - self.beta)) < self.threshold:
                 # We reached sufficient precision, let's exit the loop
