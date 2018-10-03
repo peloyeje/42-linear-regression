@@ -53,3 +53,7 @@ class LinearRegression(object):
         loss = np.average(np.square(predictions - self.price), axis=1)
         plt.plot(loss)
         plt.show()
+
+    def plot_linear(self):
+        self.train(verbose=False)
+        theta0, theta1 = self.all_theta0[-1], self.all_theta1[-1]
