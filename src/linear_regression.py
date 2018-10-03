@@ -89,11 +89,12 @@ class LinearRegression:
             else:
                 # We store the new weights
                 self.beta = beta
+                self.loss = loss
 
             # Print info on the current iteration if needed
             if verbose and i % 10 == 0:
                 print(
-                    f'[{i:5}] Loss: {loss:20} | Beta: {self._descale_beta(self.beta)}')
+                    f'[{i:5}] Loss: {self.loss:20} | Beta: {self._descale_beta(self.beta)}')
 
         # When convergence is reached, denormalize the beta vector and store it
         self.beta = self._descale_beta(self.beta)
@@ -117,5 +118,6 @@ class LinearRegression:
         plt.show()
 
     def predict(self, X):
+        """Predicts target according to input data"""
         X = self._intercept(X)
         return self._model(X, self.beta)
