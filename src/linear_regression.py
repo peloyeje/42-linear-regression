@@ -25,6 +25,13 @@ class LinearRegression:
         self.std = X.std(axis=0)
         return (X - self.mean) / self.std
 
+    def _descale_beta(self, b):
+        """Denormalize weights"""
+        b = b.copy()
+        b[0] = b[0] - (self.mean/self.std)
+        b[1] = b[1] / self.std
+        return b
+
     def fit(self, X, y, verbose=True):
         """Learns the weights of the regression model
 
@@ -74,9 +81,12 @@ class LinearRegression:
 
             # Print info on the current iteration if needed
             if verbose and i % 10 == 0:
-                loss = self._loss(self._model(X, self.beta), y)
+                loss = self._loss(
+                    self._model(X, self.beta),
+                    y
+                )
                 print(
-                    f'[{i:5}] Loss: {loss:20} | Beta: {self.beta}')
+                    f'[{i:5}] Loss: {loss:20} | Beta: {self._descale_beta(self.beta)}')
 
 
         return self.beta, i, self._loss(self._model(X, self.beta), y)
