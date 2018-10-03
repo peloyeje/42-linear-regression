@@ -1,9 +1,9 @@
 import numpy as np
 
 class LinearRegression:
-    def __init__(self, lr=0.01, max_iter=1000, threshold=1e-4):
+    def __init__(self, lr=0.01, max_iterations=1000, threshold=1e-4):
         self.lr = float(lr)
-        self.max_iter = int(max_iter)
+        self.max_iterations = int(max_iterations)
         self.threshold = float(threshold)
 
     @staticmethod
@@ -47,29 +47,35 @@ class LinearRegression:
         beta: np.array
             Vector of model weights
 
-        i: int
-            Number of iterations until convergence
-
-        loss: float
-            MSE
+        history: np.array
+            Performance history of the convergence process
+            Each row contains : the beta parameters and the loss
 
         """
 
         # Scale dataset
         X = self._scale(X)
         # Add intercept column
-        X = np.c_[np.ones(X.shape[0]), X]
-        # Initialize weights and iterations counter
+        X = self._intercept(X)
+        # Initialize weight vector
         self.beta = np.zeros(X.shape[1])
+        self.history = np.zeros((self.max_iterations, 4))
 
         # Iterate until we reach convergence or maximum number of iterations
-        for i in range(self.max_iter):
+        for i in range(self.max_iterations):
             # Compute gradient
             error = self._model(X, self.beta) - y
             gradient = (2.0/X.shape[0]) * np.dot(X.T, error)
 
             # Update beta according to learning rate
             beta = self.beta - (self.lr * gradient)
+            loss = self._loss(
+                self._model(X, beta),
+                y
+            )
+
+            # Store history
+            self.history[i, :] = (i, *beta, loss)
 
             if np.sum(np.abs(beta - self.beta)) < self.threshold:
                 # We reached sufficient precision, let's exit the loop
@@ -81,12 +87,14 @@ class LinearRegression:
 
             # Print info on the current iteration if needed
             if verbose and i % 10 == 0:
-                loss = self._loss(
-                    self._model(X, self.beta),
-                    y
-                )
                 print(
                     f'[{i:5}] Loss: {loss:20} | Beta: {self._descale_beta(self.beta)}')
 
+        # When convergence is reached, denormalize the beta vector and store it
+        self.beta = self._descale_beta(self.beta)
 
-        return self.beta, i, self._loss(self._model(X, self.beta), y)
+        return self.beta, self.history
+
+    def predict(self, X):
+        X = self._intercept(X)
+        return self._model(X, self.beta)
