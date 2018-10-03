@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib import pyplot as plt
 
 class LinearRegression:
     def __init__(self, lr=0.01, max_iterations=1000, threshold=1e-4):
@@ -98,6 +99,22 @@ class LinearRegression:
         self.beta = self._descale_beta(self.beta)
 
         return self.beta, self.history
+
+    def plot_history(self):
+        """Plots a summary graph of the fitting process."""
+
+        if not hasattr(self, 'history'):
+            raise ValueError('Please train the model first')
+
+        fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(20, 10))
+        labels = ['Intercept', 'Slope', 'Loss']
+
+        for ax, data, label in zip(axes, self.history[self.history[:, 0] != 0, 1:].T, labels):
+            ax.plot(np.arange(data.size), data)
+            ax.legend([label])
+            ax.set_xlabel('Iterations')
+        fig.suptitle(f'Weights: {self.beta} | Loss: {self.loss}')
+        plt.show()
 
     def predict(self, X):
         X = self._intercept(X)
