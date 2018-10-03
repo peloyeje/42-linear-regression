@@ -31,8 +31,8 @@ class LinearRegression:
     def _descale_beta(self, b):
         """Denormalize weights"""
         b = b.copy()
-        b[0] = b[0] - (self.mean/self.std)
-        b[1] = b[1] / self.std
+        b[0] = (b[0] * self.std[1] - b[1] * self.mean[0] * (self.std[1] / self.std[0])) + self.mean[1]
+        b[1] = b[1] * (self.std[1] / self.std[0])
         return b
 
     def fit(self, X, y, verbose=True):
@@ -57,11 +57,12 @@ class LinearRegression:
         """
 
         # Scale dataset
-        X = self._scale(X)
+        data = self._scale(np.c_[X, y])
+        X, y = data[:, :-1], data[:, -1]
         # Add intercept column
         X = self._intercept(X)
         # Initialize weight vector
-        self.beta = np.zeros(X.shape[1])
+        self.beta = np.ones(X.shape[1])
         self.history = np.zeros((self.max_iterations, 4))
 
         # Iterate until we reach convergence or maximum number of iterations
