@@ -4,9 +4,9 @@ The aim of this project is to implement from scratch a program that predicts the
 
 ### Installation and usage
 
-To train the algorithm:
+To train the algorithm on the sample dataset:
 
-```shell
+```
 $ pip install numpy
 $ src/train.py -h
 usage: train.py [-h] -i INPUT -m MODEL [-p]
@@ -18,12 +18,13 @@ optional arguments:
   -m MODEL, --model MODEL
                         Output file to store the regressor
   -p, --plot            Print convergence and regression graphs
-$ src/train.py -i data/data.csv -m data/model -p
+$ src/train.py -i data/data.csv -m output/model -p
+...
 ```
 
 To make predictions:
 
-```shell
+```
 $ src/predict.py -h
 usage: predict.py [-h] -m MODEL [-v VALUE]
 
@@ -33,6 +34,8 @@ optional arguments:
                         Trained model file
   -v VALUE, --value VALUE
                         Numerical mileage value to get price for
+$ src/predict.py -m output/model
+...
 ```
 
 ### Authors
