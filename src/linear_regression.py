@@ -132,6 +132,20 @@ class LinearRegression:
         fig.suptitle(f'Weights: {self.beta} | Loss: {self.loss}')
         plt.show()
 
+    def plot_result(self, X):
+        """Plots the regression line alongside data points"""
+
+        if not hasattr(self, 'history'):
+            raise ValueError('Please train the model first')
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+        projection = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+        ax.scatter(X[:, 0], X[:, 1], label='Data', color='b')
+        ax.plot(projection, self.predict(projection), label='Regression', color='r')
+
+        fig.suptitle(f'Actual data vs. projected data')
+        plt.show()
+
     def predict(self, X):
         """Predicts target according to input data"""
         X = self._intercept(X)
