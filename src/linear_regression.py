@@ -3,6 +3,20 @@ from matplotlib import pyplot as plt
 
 class LinearRegression:
     def __init__(self, lr=0.01, max_iterations=1000, threshold=1e-4):
+        """Initialize linear regression model
+
+        Parameters
+        ----------
+        lr: float
+            Learning rate
+        max_iterations: int
+            Maximum number of GD iterations
+        threshold: float
+            If the difference between the sum of the beta vector components
+            at iteration t+1 and at iteration t is lower than this, we assume
+            convergence has been reached
+        """
+
         self.lr = float(lr)
         self.max_iterations = int(max_iterations)
         self.threshold = float(threshold)
@@ -27,6 +41,7 @@ class LinearRegression:
         return (X - self.mean) / self.std
 
     def _intercept(self, X):
+        """Add intercept (column of ones) to the design matrix X"""
         return np.c_[np.ones(X.shape[0]), X]
 
     def _descale_beta(self, b):
