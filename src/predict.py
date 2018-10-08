@@ -40,3 +40,4 @@ if __name__ == '__main__':
 
         value = np.array([value])
         print(f"This car is estimated to be worth {lr.predict(value)[0]:.1f} euros")
+
